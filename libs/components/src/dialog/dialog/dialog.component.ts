@@ -84,8 +84,7 @@ export class DialogComponent {
           : [
               "md:tw-p-4",
               "tw-w-screen",
-              "tw-max-h-screen",
-              "md:tw-max-h-[90vh]",
+              "tw-max-h-[90vh]",
               ...this.width,
               // Prevent the animation from starting again when the viewport changes since it changes between breakpoints
               ...(this.animationCompleted ? [] : this.animationClasses),
