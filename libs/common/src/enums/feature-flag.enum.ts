@@ -94,13 +94,13 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.EnableNewCardCombinedExpiryAutofill]: FALSE,
   [FeatureFlag.GenerateIdentityFillScriptRefactor]: FALSE,
   [FeatureFlag.IdpAutoSubmitLogin]: FALSE,
-  [FeatureFlag.NotificationRefresh]: FALSE,
+  [FeatureFlag.NotificationRefresh]: true,
   [FeatureFlag.UseTreeWalkerApiForPageDetailsCollection]: FALSE,
   [FeatureFlag.MacOsNativeCredentialSync]: FALSE,
 
   /* Data Insights and Reporting */
-  [FeatureFlag.CriticalApps]: FALSE,
-  [FeatureFlag.EnableRiskInsightsNotifications]: FALSE,
+  [FeatureFlag.CriticalApps]: true,
+  [FeatureFlag.EnableRiskInsightsNotifications]: true,
 
   /* Tools */
   [FeatureFlag.ItemShare]: FALSE,
@@ -109,7 +109,7 @@ export const DefaultFeatureFlagValue = {
   /* Vault */
   [FeatureFlag.PM8851_BrowserOnboardingNudge]: FALSE,
   [FeatureFlag.PM9111ExtensionPersistAddEditForm]: FALSE,
-  [FeatureFlag.SecurityTasks]: FALSE,
+  [FeatureFlag.SecurityTasks]: true,
   [FeatureFlag.CipherKeyEncryption]: FALSE,
   [FeatureFlag.PM18520_UpdateDesktopCipherForm]: FALSE,
   [FeatureFlag.EndUserNotifications]: FALSE,

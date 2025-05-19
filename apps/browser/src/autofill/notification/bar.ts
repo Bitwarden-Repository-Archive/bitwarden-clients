@@ -9,6 +9,7 @@ import { NotificationCipherData } from "../content/components/cipher/types";
 import { CollectionView, OrgView } from "../content/components/common-types";
 import { NotificationConfirmationContainer } from "../content/components/notification/confirmation/container";
 import { NotificationContainer } from "../content/components/notification/container";
+import { notificationIsLoading as notificationIsLoadingSignal } from "../content/components/signals/notification-load-state";
 import { selectedFolder as selectedFolderSignal } from "../content/components/signals/selected-folder";
 import { selectedVault as selectedVaultSignal } from "../content/components/signals/selected-vault";
 import { buildSvgDomElement } from "../utils";
@@ -152,22 +153,32 @@ async function initNotificationBar(message: NotificationBarWindowMessage) {
     // Current implementations utilize a require for scss files which creates the need to remove the node.
     document.head.querySelectorAll('link[rel="stylesheet"]').forEach((node) => node.remove());
 
+    notificationIsLoadingSignal.set(false);
+
     if (isVaultLocked) {
-      return render(
-        NotificationContainer({
+      const notificationConfig = {
           ...notificationBarIframeInitData,
           type: NotificationTypes.Unlock,
           theme: resolvedTheme,
           personalVaultIsAllowed: !personalVaultDisallowed,
           handleCloseNotification,
-          handleSaveAction: (e) => {
-            sendSaveCipherMessage(true);
-
-            // @TODO can't close before vault has finished decrypting, but can't leave open during long decrypt because it looks like the experience has failed
-          },
           handleEditOrUpdateAction,
           i18n,
-        }),
+          isLoading: false,
+        };
+      const handleSaveAction = () => {
+        notificationIsLoadingSignal.set(true);
+        // @TODO true to open to edit popout - false is cleaner, but makes assumptions about cipher save/update selections, so the former is probably safer
+        sendSaveCipherMessage(true);
+
+        // @TODO can't close before vault has finished decrypting, but can't leave open during long decrypt because it looks like the experience has failed
+        // sendPlatformMessage({ command: "bgCloseNotificationBar" });
+
+        render(NotificationContainer({...notificationConfig, handleSaveAction: () => {}, isLoading: true}), document.body)
+      }
+      const UnlockNotification = NotificationContainer({...notificationConfig, handleSaveAction})
+      return render(
+        UnlockNotification,
         document.body,
       );
     }
