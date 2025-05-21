@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from "@angular/forms";
 import { firstValueFrom } from "rxjs";
 
@@ -28,6 +28,7 @@ import {
   ToastService,
   Translation,
 } from "@bitwarden/components";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import {
   DEFAULT_KDF_CONFIG,
   KdfConfig,
@@ -113,6 +114,8 @@ interface InputPasswordForm {
   ],
 })
 export class InputPasswordComponent implements OnInit {
+  @ViewChild(PasswordStrengthV2Component) passwordStrengthComponent!: PasswordStrengthV2Component;
+
   @Output() onPasswordFormSubmit = new EventEmitter<PasswordInputResult>();
   @Output() onSecondaryButtonClick = new EventEmitter<void>();
 
@@ -179,6 +182,7 @@ export class InputPasswordComponent implements OnInit {
     private kdfConfigService: KdfConfigService,
     private keyService: KeyService,
     private masterPasswordService: MasterPasswordServiceAbstraction,
+    private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private platformUtilsService: PlatformUtilsService,
     private policyService: PolicyService,
     private toastService: ToastService,
@@ -608,5 +612,29 @@ export class InputPasswordComponent implements OnInit {
 
   protected getPasswordStrengthScore(score: PasswordStrengthScore) {
     this.passwordStrengthScore = score;
+  }
+
+  protected async generatePassword() {
+    const options = (await this.passwordGenerationService.getOptions())?.[0] ?? {};
+    this.formGroup.patchValue({
+      newPassword: await this.passwordGenerationService.generatePassword(options),
+    });
+    this.passwordStrengthComponent.updatePasswordStrength(
+      this.formGroup.controls.newPassword.value,
+    );
+  }
+
+  copy() {
+    const value = this.formGroup.value.newPassword;
+    if (value == null) {
+      return;
+    }
+
+    this.platformUtilsService.copyToClipboard(value, { window: window });
+    this.toastService.showToast({
+      variant: "info",
+      title: "",
+      message: this.i18nService.t("valueCopied", this.i18nService.t("password")),
+    });
   }
 }
