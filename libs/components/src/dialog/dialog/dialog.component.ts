@@ -71,7 +71,6 @@ export class DialogComponent {
    */
   @Input() loading = false;
 
-  private animationClasses = ["tw-animate-slide-up", "md:tw-animate-slide-down"];
   private animationCompleted = false;
 
   @HostBinding("class") get classes() {
@@ -109,6 +108,15 @@ export class DialogComponent {
       default: {
         return "md:tw-max-w-xl";
       }
+    }
+  }
+
+  get animationClasses() {
+    switch (this.dialogSize) {
+      case "small":
+        return ["tw-animate-slide-down"];
+      default:
+        return ["tw-animate-slide-up", "md:tw-animate-slide-down"];
     }
   }
 
