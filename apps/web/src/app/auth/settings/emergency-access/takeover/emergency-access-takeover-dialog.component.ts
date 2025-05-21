@@ -67,8 +67,6 @@ export class EmergencyAccessTakeoverDialogComponent implements OnInit {
 
   inputPasswordFlow = InputPasswordFlow.ChangePasswordDelegation;
   masterPasswordPolicyOptions?: MasterPasswordPolicyOptions;
-  receivedPasswordInputResult = false;
-  submitting = false;
 
   constructor(
     @Inject(DIALOG_DATA) protected dialogData: EmergencyAccessTakeoverDialogData,
@@ -93,24 +91,10 @@ export class EmergencyAccessTakeoverDialogComponent implements OnInit {
   }
 
   protected handlePrimaryButtonClick = async () => {
-    try {
-      this.submitting = true;
-      await this.inputPasswordComponent.submit();
-    } catch {
-      // Flip to false if submit() throws an error
-      this.submitting = false;
-    }
-
-    // Flip to false if submit() returns early without a PasswordInputResult
-    // emission due to form validation errors or new password doesn't meet org policy reqs.
-    if (!this.receivedPasswordInputResult) {
-      this.submitting = false;
-    }
+    await this.inputPasswordComponent.submit();
   };
 
   protected async handlePasswordFormSubmit(passwordInputResult: PasswordInputResult) {
-    this.receivedPasswordInputResult = Boolean(passwordInputResult);
-
     try {
       await this.emergencyAccessService.takeover(
         this.dialogData.emergencyAccessId,
