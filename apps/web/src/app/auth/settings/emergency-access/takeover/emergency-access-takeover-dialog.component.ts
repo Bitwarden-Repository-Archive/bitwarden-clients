@@ -121,11 +121,14 @@ export class EmergencyAccessTakeoverDialogComponent implements OnInit {
    */
   static open = (
     dialogService: DialogService,
-    dialogConfig: DialogConfig<EmergencyAccessTakeoverDialogData>,
+    dialogConfig: DialogConfig<
+      EmergencyAccessTakeoverDialogData,
+      DialogRef<EmergencyAccessTakeoverDialogResultType, unknown>
+    >,
   ) => {
-    return dialogService.open<EmergencyAccessTakeoverDialogResultType>(
-      EmergencyAccessTakeoverDialogComponent,
-      dialogConfig,
-    );
+    return dialogService.open<
+      EmergencyAccessTakeoverDialogResultType,
+      EmergencyAccessTakeoverDialogData
+    >(EmergencyAccessTakeoverDialogComponent, dialogConfig);
   };
 }
