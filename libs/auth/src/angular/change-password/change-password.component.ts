@@ -115,11 +115,14 @@ export class ChangePasswordComponent implements OnInit {
           throw new Error("userId not found");
         }
 
-        await this.changePasswordService.changePassword(
-          passwordInputResult,
-          this.activeUserId,
-          this.forceSetPasswordReason === ForceSetPasswordReason.AdminForcePasswordReset,
-        );
+        if (this.forceSetPasswordReason === ForceSetPasswordReason.AdminForcePasswordReset) {
+          await this.changePasswordService.changePasswordForAccountRecovery(
+            passwordInputResult,
+            this.activeUserId,
+          );
+        } else {
+          await this.changePasswordService.changePassword(passwordInputResult, this.activeUserId);
+        }
 
         this.toastService.showToast({
           variant: "success",

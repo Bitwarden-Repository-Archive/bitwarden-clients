@@ -30,12 +30,12 @@ export abstract class ChangePasswordService {
    *
    * @param passwordInputResult credentials object received from the `InputPasswordComponent`
    * @param userId the `userId`
-   * @param recoverAccount this is a boolean to know if we need to hit the update-temp-password endpoint instead of the password endpoint
    * @throws if the `userId`, `currentMasterKey`, or `currentServerMasterKeyHash` is not found
    */
-  abstract changePassword(
+  abstract changePassword(passwordInputResult: PasswordInputResult, userId: UserId): Promise<void>;
+
+  abstract changePasswordForAccountRecovery(
     passwordInputResult: PasswordInputResult,
     userId: UserId,
-    recoverAccount?: boolean,
   ): Promise<void>;
 }
